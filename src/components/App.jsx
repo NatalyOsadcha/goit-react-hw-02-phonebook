@@ -1,37 +1,66 @@
 import React, { Component } from 'react';
 import PhonebookForm from './PhonebookForm/PhonebookForm';
 import Contacts from './Contacts/Contacts';
-import { nanoid } from 'nanoid'
-
+import Filter from './Filter/Filter';
+import initialContacts from '../InitialContacts.json';
+import { nanoid } from 'nanoid';
 
 class App extends Component {
   state = {
-  contacts: [],
-  name: '',
-  number: ''
-}
-  
-  addContact = (name, number) => {
+    contacts: initialContacts,
+    filter: '',
+  };
+
+  addContact = ({ name, number }) => {
     const contact = {
       id: nanoid(),
       name,
-      number
+      number,
     };
-     this.setState(({ contacts }) => ({
+    if (this.state.contacts.some(contact => contact.name === name)) {
+      alert(`${name} is already in the contacts.`);
+      return;
+    }
+    this.setState(({ contacts }) => ({
       contacts: [contact, ...contacts],
     }));
-  }
+  };
+
+  changeFilter = evt => {
+    this.setState({
+      filter: evt.target.value,
+    });
+  };
+
+  getFilteredContacts = () => {
+    const { contacts, filter } = this.state;
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(filter.toLowerCase().trim())
+    );
+  };
+
+  deleteContact = contactId => {
+    this.setState(({ contacts }) => ({
+      contacts: contacts.filter(contact => contact.id !== contactId),
+    }));
+  };
+
   render() {
-    const { contacts} = this.state;
+    const filteredContacts = this.getFilteredContacts();
+
     return (
       <>
-        <h2>Phonebook</h2>
+        <h1>Phonebook</h1>
         <PhonebookForm onSubmit={this.addContact} />
         <h2>Contacts</h2>
-        <Contacts contacts={contacts} />
-    </>
-  );
-};
+        <Filter value={this.state.filter} onChange={this.changeFilter} />
+        <Contacts
+          contacts={filteredContacts}
+          onDeleteContact={this.deleteContact}
+        />
+      </>
+    );
   }
+}
 
 export default App;
