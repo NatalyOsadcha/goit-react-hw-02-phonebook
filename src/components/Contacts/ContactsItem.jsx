@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import css from './Contacts.module.css';
+import css from './ContactsItem.module.css';
 
 const ContactsItem = ({ id, name, number, onDeleteContact }) => {
   return (
@@ -17,10 +17,10 @@ const ContactsItem = ({ id, name, number, onDeleteContact }) => {
   );
 };
 
-ContactsItem.protoTypes= {
+ContactsItem.protoTypes = {
   name: PropTypes.string,
   number: PropTypes.number,
-  id: PropTypes.string
-}
+  id: PropTypes.string,
+};
 
 export default ContactsItem;
